@@ -6,10 +6,10 @@ class Texture{
         Texture(std::string fileName);
         ~Texture();
         unsigned int GetID(){return id;}
-        void Enable();
+        static void Enable(int id);
         static void SetActiveTexture(int n);
-    private:
         unsigned int id;
+        std::string type;
 };
 
 #endif //TEXTURE_H
