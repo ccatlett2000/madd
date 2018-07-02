@@ -27,9 +27,9 @@ Texture::~Texture(){
     glDeleteTextures(1, &id);
 }
 
-void Texture::Enable(){
+void Texture::Enable(int id){
     glBindTexture(GL_TEXTURE_2D, id);
-}
+} 
 
 void Texture::SetActiveTexture(int n){
     glActiveTexture(GL_TEXTURE0+n);

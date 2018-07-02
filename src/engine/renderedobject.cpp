@@ -62,7 +62,7 @@ bool RenderedObject::Render(){
     ShaderProgram::SetFloatUniform(shaderTimeLocation, parent->GetContext()->GetTime());
     shader->Enable();
     Texture::SetActiveTexture(0);
-    textureObj->Enable();
+    Texture::Enable(textureObj->id);
 
     VAO->Draw();
     return true;
