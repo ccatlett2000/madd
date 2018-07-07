@@ -60,7 +60,7 @@ Cube::Cube(Madd* context):context(context){
         glm::vec3(-1.3f,  1.0f, -1.5f)  
     };
     cubeMesh = new RenderedObject(this);
-    cubeMesh->RenderInit(vertices,"default.vs","default.fs","container.jpg");
+    cubeMesh->RenderInit(vertices,"container.jpg",true);
 }
 
 Cube::~Cube(){
@@ -84,7 +84,7 @@ bool Cube::Render(){
 }
 
 bool Cube::ReloadShaders(){
-    return cubeMesh->LoadShader();
+    return cubeMesh->ReloadShader();
 }
 
 bool Cube::Update(){

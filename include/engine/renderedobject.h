@@ -14,9 +14,11 @@ class RenderedObject{
         RenderedObject(GameObject* parent);
         ~RenderedObject();
         bool RenderInit(std::vector<float> vertices,
-                        std::string vertexShader,
-                        std::string fragmentShader,
-                        std::string texture);
+                        std::string texture,
+                        bool usesGlobalShader,
+                        std::string vertexShader="",
+                        std::string fragmentShader="");
+        bool ReloadShader();
         bool LoadShader();
         bool Render();
         glm::mat4 GetTransformation();
@@ -28,7 +30,7 @@ class RenderedObject{
         Texture* textureObj;
         GameObject* parent;
         ShaderProgram* shader;
-
+        bool usingGlobalShader;
         unsigned int shaderTimeLocation;
         unsigned int modelLoc;
         unsigned int viewLoc;

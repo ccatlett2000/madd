@@ -7,16 +7,20 @@
 #include "renderer.h"
 #include "camera.h"
 #include "eventhandler.h"
+#include "shaderprogram.h"
+#include "error.h"
 Madd::Madd(int width, int height, const char *title):mainCamera(NULL),
-                                                    close(false),
+                                                     close(false),
                                                      width(width),
                                                      height(height),
                                                      timeScale(1.0f),
-                                                     lastFrame(Clock::now()){
+                                                     lastFrame(Clock::now()),
+                                                     globalShader(NULL){
     render = new Renderer(this, width, height, title);
     event = new EventHandler(this);
     std::vector<unsigned int> keys = {KEY_ESCAPE,KEY_SPACE};
     event->RegisterMultipleKeyCB(BIND(Madd::ProcessInput),keys);
+    LoadShader();
 }
 
 Madd::~Madd() { 
@@ -25,6 +29,7 @@ Madd::~Madd() {
     }
     delete render;
     delete event;
+    delete globalShader;
 }
 
 void Madd::AddObject(GameObject* obj){
@@ -43,11 +48,24 @@ void Madd::Tick(){
 }
 
 void Madd::ReloadShader() {
+    LoadShader();
     for(GameObject* obj : objs)
         if(!obj->ReloadShaders())
             return;
 }
-#include <iostream>
+
+void Madd::LoadShader(){
+    ShaderProgram* _shader;
+    try {
+        _shader = new ShaderProgram("default.vs", "default.fs");
+    } catch(int x){
+        throw GLOBAL_SHADER_LOADING_FAILED;
+    }
+    if (globalShader) 
+        delete globalShader;
+    globalShader = _shader;
+}
+
 void Madd::ProcessInput(int key, int action){
     if (key == KEY_ESCAPE)
         Close();
@@ -68,3 +86,4 @@ int Madd::GetHeight(){return render->GetHeight();}
 GLFWwindow* Madd::GetWindow(){return render->GetWindow();}
 float Madd::GetTime(){return glfwGetTime();}
 float Madd::GetDeltaTime(){return dTime.count() * timeScale;}
+ShaderProgram* Madd::GetGlobalShader(){return globalShader;}
