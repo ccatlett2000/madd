@@ -11,24 +11,40 @@ RenderedObject::RenderedObject(GameObject* parent):parent(parent),shader(nullptr
 
 RenderedObject::~RenderedObject(){
     delete VAO;
-    delete shader;
+    if(!usingGlobalShader)
+        delete shader;
     delete textureObj;
 }
 
 bool RenderedObject::RenderInit(std::vector<float> vertices,
+                                std::string texture,
+                                bool usesGlobalShader,
                                 std::string vertexShader,
-                                std::string fragmentShader,
-                                std::string texture){
+                                std::string fragmentShader){
     vsPath = vertexShader;
     fsPath = fragmentShader;
     model = glm::mat4(1.0f);
     VAO = new VertexArray(vertices);
     textureObj = new Texture(texture);
-
-    if(!LoadShader())
-        return false;
+    usingGlobalShader = usesGlobalShader;
+    ReloadShader();
     shader->Enable();
     shader->AddInt("texture1",0);
+    return true;
+}
+
+bool RenderedObject::ReloadShader(){
+    if(usingGlobalShader)
+        shader = parent->GetContext()->GetGlobalShader();
+    else if(!LoadShader())
+        return false;
+
+    //Update Locations for new shader
+    shaderTimeLocation = shader->GetUniformLocation("time");
+    modelLoc = shader->GetUniformLocation("model");
+    viewLoc = shader->GetUniformLocation("view");
+    projectionLoc = shader->GetUniformLocation("projection");
+    ShaderProgram::SetMartix4fUniform(modelLoc, &model);
     return true;
 }
 
@@ -42,13 +58,6 @@ bool RenderedObject::LoadShader() {
     if (shader) 
         delete shader;
     shader = _shader;
-    
-    //Update Locations for new shader
-    shaderTimeLocation = shader->GetUniformLocation("time");
-    modelLoc = shader->GetUniformLocation("model");
-    viewLoc = shader->GetUniformLocation("view");
-    projectionLoc = shader->GetUniformLocation("projection");
-    ShaderProgram::SetMartix4fUniform(modelLoc, &model);
     return true;
 }
 

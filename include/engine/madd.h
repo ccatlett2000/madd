@@ -13,6 +13,7 @@ class GameObject;
 class Renderer;
 class Camera;
 class EventHandler;
+class ShaderProgram;
 struct GLFWwindow;
 class Madd {
 public:
@@ -30,6 +31,7 @@ public:
     int GetWidth();
     int GetHeight();
     GLFWwindow* GetWindow();
+    ShaderProgram* GetGlobalShader();
     void ProcessInput(int key, int action);
 private:
     Renderer* render;
@@ -38,12 +40,14 @@ private:
     EventHandler* event;
     void ReloadShader();
     void UpdateDeltaTime();
+    void LoadShader();
     std::chrono::duration<float> dTime;
     bool close;
     int width;
     int height;
     float timeScale;
     Time lastFrame;
+    ShaderProgram* globalShader;
 };
 
 #endif // MADD_H
