@@ -8,7 +8,7 @@
 #include "camera.h"
 #include "eventhandler.h"
 #include "shaderprogram.h"
-#include "error.h"
+#include "errors.h"
 Madd::Madd(int width, int height, const char *title):mainCamera(NULL),
                                                      close(false),
                                                      width(width),
